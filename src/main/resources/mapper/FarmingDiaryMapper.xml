@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="com.farm404.samyang.mapper.FarmingDiaryMapper">
+    
+    <!-- 결과 매핑 설정 -->
+    <resultMap id="FarmingDiaryResultMap" type="com.farm404.samyang.entity.FarmingDiary">
+        <id property="DiaryID" column="DiaryID"/>
+        <result property="UserID" column="UserID"/>
+        <result property="CropID" column="CropID"/>
+        <result property="Title" column="Title"/>
+        <result property="Content" column="Content"/>
+        <result property="WeatherCondition" column="WeatherCondition"/>
+        <result property="Temperature" column="Temperature"/>
+        <result property="Humidity" column="Humidity"/>
+        <result property="WorkDate" column="WorkDate"/>
+        <result property="createdAt" column="CreatedAt"/>
+        <result property="updatedAt" column="UpdatedAt"/>
+    </resultMap>
+    
+    <!-- ID로 일지 찾기 -->
+    <select id="selectById" resultMap="FarmingDiaryResultMap">
+        SELECT DiaryID, UserID, CropID, Title, Content, WeatherCondition, 
+               Temperature, Humidity, WorkDate, CreatedAt, UpdatedAt
+        FROM FarmingDiary
+        WHERE DiaryID = #{DiaryID}
+    </select>
+    
+    <!-- 모든 일지 조회 -->
+    <select id="selectAll" resultMap="FarmingDiaryResultMap">
+        SELECT DiaryID, UserID, CropID, Title, Content, WeatherCondition, 
+               Temperature, Humidity, WorkDate, CreatedAt, UpdatedAt
+        FROM FarmingDiary
+        ORDER BY WorkDate DESC, DiaryID DESC
+    </select>
+    
+    <!-- 특정 사용자의 일지 찾기 -->
+    <select id="selectByUserID" resultMap="FarmingDiaryResultMap">
+        SELECT DiaryID, UserID, CropID, Title, Content, WeatherCondition, 
+               Temperature, Humidity, WorkDate, CreatedAt, UpdatedAt
+        FROM FarmingDiary
+        WHERE UserID = #{UserID}
+        ORDER BY WorkDate DESC, DiaryID DESC
+    </select>
+    
+    <!-- 특정 작물의 일지 찾기 -->
+    <select id="selectByCropID" resultMap="FarmingDiaryResultMap">
+        SELECT DiaryID, UserID, CropID, Title, Content, WeatherCondition, 
+               Temperature, Humidity, WorkDate, CreatedAt, UpdatedAt
+        FROM FarmingDiary
+        WHERE CropID = #{CropID}
+        ORDER BY WorkDate DESC, DiaryID DESC
+    </select>
+    
+    <!-- 일지 추가 -->
+    <insert id="insert" parameterType="com.farm404.samyang.entity.FarmingDiary" 
+            useGeneratedKeys="true" keyProperty="DiaryID">
+        INSERT INTO FarmingDiary (UserID, CropID, Title, Content, WeatherCondition, 
+                                  Temperature, Humidity, WorkDate)
+        VALUES (#{UserID}, #{CropID}, #{Title}, #{Content}, #{WeatherCondition}, 
+                #{Temperature}, #{Humidity}, #{WorkDate})
+    </insert>
+    
+    <!-- 일지 수정 -->
+    <update id="update" parameterType="com.farm404.samyang.entity.FarmingDiary">
+        UPDATE FarmingDiary
+        SET UserID = #{UserID},
+            CropID = #{CropID},
+            Title = #{Title},
+            Content = #{Content},
+            WeatherCondition = #{WeatherCondition},
+            Temperature = #{Temperature},
+            Humidity = #{Humidity},
+            WorkDate = #{WorkDate}
+        WHERE DiaryID = #{DiaryID}
+    </update>
+    
+    <!-- 일지 삭제 -->
+    <delete id="delete">
+        DELETE FROM FarmingDiary
+        WHERE DiaryID = #{DiaryID}
+    </delete>
+    
+</mapper>

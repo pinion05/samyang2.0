@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="com.farm404.samyang.mapper.CommentMapper">
+    
+    <!-- 결과 매핑 설정 -->
+    <resultMap id="CommentResultMap" type="com.farm404.samyang.entity.Comment">
+        <id property="CommentID" column="CommentID"/>
+        <result property="PostID" column="PostID"/>
+        <result property="UserID" column="UserID"/>
+        <result property="Content" column="Content"/>
+        <result property="createdAt" column="CreatedAt"/>
+        <result property="updatedAt" column="UpdatedAt"/>
+    </resultMap>
+    
+    <!-- ID로 댓글 찾기 -->
+    <select id="selectById" resultMap="CommentResultMap">
+        SELECT CommentID, PostID, UserID, Content, CreatedAt, UpdatedAt
+        FROM Comment
+        WHERE CommentID = #{CommentID}
+    </select>
+    
+    <!-- 모든 댓글 조회 -->
+    <select id="selectAll" resultMap="CommentResultMap">
+        SELECT CommentID, PostID, UserID, Content, CreatedAt, UpdatedAt
+        FROM Comment
+        ORDER BY CommentID DESC
+    </select>
+    
+    <!-- 특정 게시물의 댓글 찾기 -->
+    <select id="selectByPostID" resultMap="CommentResultMap">
+        SELECT CommentID, PostID, UserID, Content, CreatedAt, UpdatedAt
+        FROM Comment
+        WHERE PostID = #{PostID}
+        ORDER BY CreatedAt ASC
+    </select>
+    
+    <!-- 특정 사용자의 댓글 찾기 -->
+    <select id="selectByUserID" resultMap="CommentResultMap">
+        SELECT CommentID, PostID, UserID, Content, CreatedAt, UpdatedAt
+        FROM Comment
+        WHERE UserID = #{UserID}
+        ORDER BY CommentID DESC
+    </select>
+    
+    <!-- 댓글 추가 -->
+    <insert id="insert" parameterType="com.farm404.samyang.entity.Comment" 
+            useGeneratedKeys="true" keyProperty="CommentID">
+        INSERT INTO Comment (PostID, UserID, Content)
+        VALUES (#{PostID}, #{UserID}, #{Content})
+    </insert>
+    
+    <!-- 댓글 수정 -->
+    <update id="update" parameterType="com.farm404.samyang.entity.Comment">
+        UPDATE Comment
+        SET Content = #{Content}
+        WHERE CommentID = #{CommentID}
+    </update>
+    
+    <!-- 댓글 삭제 -->
+    <delete id="delete">
+        DELETE FROM Comment
+        WHERE CommentID = #{CommentID}
+    </delete>
+    
+</mapper>

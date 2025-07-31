@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="com.farm404.samyang.mapper.ReportMapper">
+    
+    <!-- 결과 매핑 설정 -->
+    <resultMap id="ReportResultMap" type="com.farm404.samyang.entity.Report">
+        <id property="ReportID" column="ReportID"/>
+        <result property="ReporterID" column="ReporterID"/>
+        <result property="TargetType" column="TargetType"/>
+        <result property="TargetID" column="TargetID"/>
+        <result property="Reason" column="Reason"/>
+        <result property="Description" column="Description"/>
+        <result property="Status" column="Status"/>
+        <result property="createdAt" column="CreatedAt"/>
+        <result property="updatedAt" column="UpdatedAt"/>
+    </resultMap>
+    
+    <!-- ID로 신고 찾기 -->
+    <select id="selectById" resultMap="ReportResultMap">
+        SELECT ReportID, ReporterID, TargetType, TargetID, Reason, 
+               Description, Status, CreatedAt, UpdatedAt
+        FROM Report
+        WHERE ReportID = #{ReportID}
+    </select>
+    
+    <!-- 모든 신고 조회 -->
+    <select id="selectAll" resultMap="ReportResultMap">
+        SELECT ReportID, ReporterID, TargetType, TargetID, Reason, 
+               Description, Status, CreatedAt, UpdatedAt
+        FROM Report
+        ORDER BY ReportID DESC
+    </select>
+    
+    <!-- 특정 신고자의 신고 찾기 -->
+    <select id="selectByReporterID" resultMap="ReportResultMap">
+        SELECT ReportID, ReporterID, TargetType, TargetID, Reason, 
+               Description, Status, CreatedAt, UpdatedAt
+        FROM Report
+        WHERE ReporterID = #{ReporterID}
+        ORDER BY ReportID DESC
+    </select>
+    
+    <!-- 특정 상태의 신고 찾기 -->
+    <select id="selectByStatus" resultMap="ReportResultMap">
+        SELECT ReportID, ReporterID, TargetType, TargetID, Reason, 
+               Description, Status, CreatedAt, UpdatedAt
+        FROM Report
+        WHERE Status = #{Status}
+        ORDER BY ReportID DESC
+    </select>
+    
+    <!-- 신고 추가 -->
+    <insert id="insert" parameterType="com.farm404.samyang.entity.Report" 
+            useGeneratedKeys="true" keyProperty="ReportID">
+        INSERT INTO Report (ReporterID, TargetType, TargetID, Reason, Description, Status)
+        VALUES (#{ReporterID}, #{TargetType}, #{TargetID}, #{Reason}, #{Description}, 
+                <if test="Status != null">#{Status}</if>
+                <if test="Status == null">'pending'</if>)
+    </insert>
+    
+    <!-- 신고 수정 -->
+    <update id="update" parameterType="com.farm404.samyang.entity.Report">
+        UPDATE Report
+        SET ReporterID = #{ReporterID},
+            TargetType = #{TargetType},
+            TargetID = #{TargetID},
+            Reason = #{Reason},
+            Description = #{Description},
+            Status = #{Status}
+        WHERE ReportID = #{ReportID}
+    </update>
+    
+    <!-- 신고 삭제 -->
+    <delete id="delete">
+        DELETE FROM Report
+        WHERE ReportID = #{ReportID}
+    </delete>
+    
+</mapper>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="com.farm404.samyang.mapper.UserMapper">
+    
+    <!-- 결과 매핑 설정 -->
+    <resultMap id="UserResultMap" type="com.farm404.samyang.entity.User">
+        <id property="UserID" column="UserID"/>
+        <result property="Username" column="Username"/>
+        <result property="Password" column="Password"/>
+        <result property="Email" column="Email"/>
+        <result property="FullName" column="FullName"/>
+        <result property="createdAt" column="CreatedAt"/>
+        <result property="updatedAt" column="UpdatedAt"/>
+    </resultMap>
+    
+    <!-- ID로 사용자 찾기 -->
+    <select id="selectById" resultMap="UserResultMap">
+        SELECT UserID, Username, Password, Email, FullName, CreatedAt, UpdatedAt
+        FROM User
+        WHERE UserID = #{UserID}
+    </select>
+    
+    <!-- 사용자명으로 찾기 -->
+    <select id="selectByUsername" resultMap="UserResultMap">
+        SELECT UserID, Username, Password, Email, FullName, CreatedAt, UpdatedAt
+        FROM User
+        WHERE Username = #{Username}
+    </select>
+    
+    <!-- 모든 사용자 조회 -->
+    <select id="selectAll" resultMap="UserResultMap">
+        SELECT UserID, Username, Password, Email, FullName, CreatedAt, UpdatedAt
+        FROM User
+        ORDER BY UserID
+    </select>
+    
+    <!-- 사용자 추가 -->
+    <insert id="insert" parameterType="com.farm404.samyang.entity.User" 
+            useGeneratedKeys="true" keyProperty="UserID">
+        INSERT INTO User (Username, Password, Email, FullName)
+        VALUES (#{Username}, #{Password}, #{Email}, #{FullName})
+    </insert>
+    
+    <!-- 사용자 수정 -->
+    <update id="update" parameterType="com.farm404.samyang.entity.User">
+        UPDATE User
+        SET Username = #{Username},
+            Password = #{Password},
+            Email = #{Email},
+            FullName = #{FullName}
+        WHERE UserID = #{UserID}
+    </update>
+    
+    <!-- 사용자 삭제 -->
+    <delete id="delete">
+        DELETE FROM User
+        WHERE UserID = #{UserID}
+    </delete>
+    
+</mapper>

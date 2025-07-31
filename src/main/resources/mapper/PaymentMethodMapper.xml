@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="com.farm404.samyang.mapper.PaymentMethodMapper">
+    
+    <!-- 결과 매핑 설정 -->
+    <resultMap id="PaymentMethodResultMap" type="com.farm404.samyang.entity.PaymentMethod">
+        <id property="PaymentMethodID" column="PaymentMethodID"/>
+        <result property="UserID" column="UserID"/>
+        <result property="MethodType" column="MethodType"/>
+        <result property="MethodName" column="MethodName"/>
+        <result property="AccountInfo" column="AccountInfo"/>
+        <result property="IsDefault" column="IsDefault"/>
+        <result property="createdAt" column="CreatedAt"/>
+        <result property="updatedAt" column="UpdatedAt"/>
+    </resultMap>
+    
+    <!-- ID로 결제수단 찾기 -->
+    <select id="selectById" resultMap="PaymentMethodResultMap">
+        SELECT PaymentMethodID, UserID, MethodType, MethodName, AccountInfo, 
+               IsDefault, CreatedAt, UpdatedAt
+        FROM PaymentMethod
+        WHERE PaymentMethodID = #{PaymentMethodID}
+    </select>
+    
+    <!-- 모든 결제수단 조회 -->
+    <select id="selectAll" resultMap="PaymentMethodResultMap">
+        SELECT PaymentMethodID, UserID, MethodType, MethodName, AccountInfo, 
+               IsDefault, CreatedAt, UpdatedAt
+        FROM PaymentMethod
+        ORDER BY PaymentMethodID
+    </select>
+    
+    <!-- 특정 사용자의 결제수단 찾기 -->
+    <select id="selectByUserID" resultMap="PaymentMethodResultMap">
+        SELECT PaymentMethodID, UserID, MethodType, MethodName, AccountInfo, 
+               IsDefault, CreatedAt, UpdatedAt
+        FROM PaymentMethod
+        WHERE UserID = #{UserID}
+        ORDER BY IsDefault DESC, PaymentMethodID
+    </select>
+    
+    <!-- 특정 사용자의 기본 결제수단 찾기 -->
+    <select id="selectDefaultByUserID" resultMap="PaymentMethodResultMap">
+        SELECT PaymentMethodID, UserID, MethodType, MethodName, AccountInfo, 
+               IsDefault, CreatedAt, UpdatedAt
+        FROM PaymentMethod
+        WHERE UserID = #{UserID} AND IsDefault = TRUE
+        LIMIT 1
+    </select>
+    
+    <!-- 결제수단 추가 -->
+    <insert id="insert" parameterType="com.farm404.samyang.entity.PaymentMethod" 
+            useGeneratedKeys="true" keyProperty="PaymentMethodID">
+        INSERT INTO PaymentMethod (UserID, MethodType, MethodName, AccountInfo, IsDefault)
+        VALUES (#{UserID}, #{MethodType}, #{MethodName}, #{AccountInfo}, 
+                <if test="IsDefault != null">#{IsDefault}</if>
+                <if test="IsDefault == null">FALSE</if>)
+    </insert>
+    
+    <!-- 결제수단 수정 -->
+    <update id="update" parameterType="com.farm404.samyang.entity.PaymentMethod">
+        UPDATE PaymentMethod
+        SET UserID = #{UserID},
+            MethodType = #{MethodType},
+            MethodName = #{MethodName},
+            AccountInfo = #{AccountInfo},
+            IsDefault = #{IsDefault}
+        WHERE PaymentMethodID = #{PaymentMethodID}
+    </update>
+    
+    <!-- 결제수단 삭제 -->
+    <delete id="delete">
+        DELETE FROM PaymentMethod
+        WHERE PaymentMethodID = #{PaymentMethodID}
+    </delete>
+    
+</mapper>

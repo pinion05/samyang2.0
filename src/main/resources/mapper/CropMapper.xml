@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="com.farm404.samyang.mapper.CropMapper">
+    
+    <!-- 결과 매핑 설정 -->
+    <resultMap id="CropResultMap" type="com.farm404.samyang.entity.Crop">
+        <id property="CropID" column="CropID"/>
+        <result property="CropName" column="CropName"/>
+        <result property="ScientificName" column="ScientificName"/>
+        <result property="Category" column="Category"/>
+        <result property="Description" column="Description"/>
+        <result property="createdAt" column="CreatedAt"/>
+        <result property="updatedAt" column="UpdatedAt"/>
+    </resultMap>
+    
+    <!-- ID로 작물 찾기 -->
+    <select id="selectById" resultMap="CropResultMap">
+        SELECT CropID, CropName, ScientificName, Category, Description, CreatedAt, UpdatedAt
+        FROM Crop
+        WHERE CropID = #{CropID}
+    </select>
+    
+    <!-- 모든 작물 조회 -->
+    <select id="selectAll" resultMap="CropResultMap">
+        SELECT CropID, CropName, ScientificName, Category, Description, CreatedAt, UpdatedAt
+        FROM Crop
+        ORDER BY CropID
+    </select>
+    
+    <!-- 카테고리로 작물 찾기 -->
+    <select id="selectByCategory" resultMap="CropResultMap">
+        SELECT CropID, CropName, ScientificName, Category, Description, CreatedAt, UpdatedAt
+        FROM Crop
+        WHERE Category = #{Category}
+        ORDER BY CropName
+    </select>
+    
+    <!-- 작물 추가 -->
+    <insert id="insert" parameterType="com.farm404.samyang.entity.Crop" 
+            useGeneratedKeys="true" keyProperty="CropID">
+        INSERT INTO Crop (CropName, ScientificName, Category, Description)
+        VALUES (#{CropName}, #{ScientificName}, #{Category}, #{Description})
+    </insert>
+    
+    <!-- 작물 수정 -->
+    <update id="update" parameterType="com.farm404.samyang.entity.Crop">
+        UPDATE Crop
+        SET CropName = #{CropName},
+            ScientificName = #{ScientificName},
+            Category = #{Category},
+            Description = #{Description}
+        WHERE CropID = #{CropID}
+    </update>
+    
+    <!-- 작물 삭제 -->
+    <delete id="delete">
+        DELETE FROM Crop
+        WHERE CropID = #{CropID}
+    </delete>
+    
+</mapper>

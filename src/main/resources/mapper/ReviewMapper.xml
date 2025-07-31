@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="com.farm404.samyang.mapper.ReviewMapper">
+    
+    <!-- 결과 매핑 설정 -->
+    <resultMap id="ReviewResultMap" type="com.farm404.samyang.entity.Review">
+        <id property="ReviewID" column="ReviewID"/>
+        <result property="UserID" column="UserID"/>
+        <result property="CropID" column="CropID"/>
+        <result property="Rating" column="Rating"/>
+        <result property="Title" column="Title"/>
+        <result property="Content" column="Content"/>
+        <result property="createdAt" column="CreatedAt"/>
+        <result property="updatedAt" column="UpdatedAt"/>
+    </resultMap>
+    
+    <!-- ID로 리뷰 찾기 -->
+    <select id="selectById" resultMap="ReviewResultMap">
+        SELECT ReviewID, UserID, CropID, Rating, Title, Content, CreatedAt, UpdatedAt
+        FROM Review
+        WHERE ReviewID = #{ReviewID}
+    </select>
+    
+    <!-- 모든 리뷰 조회 -->
+    <select id="selectAll" resultMap="ReviewResultMap">
+        SELECT ReviewID, UserID, CropID, Rating, Title, Content, CreatedAt, UpdatedAt
+        FROM Review
+        ORDER BY ReviewID DESC
+    </select>
+    
+    <!-- 특정 사용자의 리뷰 찾기 -->
+    <select id="selectByUserID" resultMap="ReviewResultMap">
+        SELECT ReviewID, UserID, CropID, Rating, Title, Content, CreatedAt, UpdatedAt
+        FROM Review
+        WHERE UserID = #{UserID}
+        ORDER BY ReviewID DESC
+    </select>
+    
+    <!-- 특정 작물의 리뷰 찾기 -->
+    <select id="selectByCropID" resultMap="ReviewResultMap">
+        SELECT ReviewID, UserID, CropID, Rating, Title, Content, CreatedAt, UpdatedAt
+        FROM Review
+        WHERE CropID = #{CropID}
+        ORDER BY ReviewID DESC
+    </select>
+    
+    <!-- 리뷰 추가 -->
+    <insert id="insert" parameterType="com.farm404.samyang.entity.Review" 
+            useGeneratedKeys="true" keyProperty="ReviewID">
+        INSERT INTO Review (UserID, CropID, Rating, Title, Content)
+        VALUES (#{UserID}, #{CropID}, #{Rating}, #{Title}, #{Content})
+    </insert>
+    
+    <!-- 리뷰 수정 -->
+    <update id="update" parameterType="com.farm404.samyang.entity.Review">
+        UPDATE Review
+        SET UserID = #{UserID},
+            CropID = #{CropID},
+            Rating = #{Rating},
+            Title = #{Title},
+            Content = #{Content}
+        WHERE ReviewID = #{ReviewID}
+    </update>
+    
+    <!-- 리뷰 삭제 -->
+    <delete id="delete">
+        DELETE FROM Review
+        WHERE ReviewID = #{ReviewID}
+    </delete>
+    
+</mapper>
