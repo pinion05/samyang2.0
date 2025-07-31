@@ -1,7 +1,10 @@
 package com.farm404.samyang.service;
 
 import com.farm404.samyang.entity.User;
+import com.farm404.samyang.exception.DuplicateException;
+import com.farm404.samyang.exception.ResourceNotFoundException;
 import com.farm404.samyang.mapper.UserMapper;
+import com.farm404.samyang.util.ValidationUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,28 +44,18 @@ public class UserService {
     
     // 사용자 생성
     public User create(User user) {
-        if (user == null) {
-            throw new IllegalArgumentException("사용자 정보가 없습니다.");
-        }
+        ValidationUtils.requireNonNull(user, "사용자 정보");
         
         // 필수 정보 확인
-        if (user.getUsername() == null || user.getUsername().trim().isEmpty()) {
-            throw new IllegalArgumentException("사용자명이 없습니다.");
-        }
-        if (user.getPassword() == null || user.getPassword().trim().isEmpty()) {
-            throw new IllegalArgumentException("비밀번호가 없습니다.");
-        }
-        if (user.getEmail() == null || user.getEmail().trim().isEmpty()) {
-            throw new IllegalArgumentException("이메일이 없습니다.");
-        }
-        if (user.getFullName() == null || user.getFullName().trim().isEmpty()) {
-            throw new IllegalArgumentException("이름이 없습니다.");
-        }
+        ValidationUtils.requireNonEmpty(user.getUsername(), "사용자명");
+        ValidationUtils.requireNonEmpty(user.getPassword(), "비밀번호");
+        ValidationUtils.requireValidEmail(user.getEmail());
+        ValidationUtils.requireNonEmpty(user.getFullName(), "이름");
         
         // 중복 확인
         User existingUser = userMapper.selectByUsername(user.getUsername());
         if (existingUser != null) {
-            throw new IllegalArgumentException("이미 존재하는 사용자명입니다.");
+            throw new DuplicateException("사용자명", user.getUsername());
         }
         
         // 저장
@@ -72,14 +65,13 @@ public class UserService {
     
     // 사용자 수정
     public User update(Integer userID, User user) {
-        if (userID == null || user == null) {
-            throw new IllegalArgumentException("수정할 정보가 없습니다.");
-        }
+        ValidationUtils.requireValidId(userID, "사용자");
+        ValidationUtils.requireNonNull(user, "수정할 정보");
         
         // 존재 확인
         User existingUser = userMapper.selectById(userID);
         if (existingUser == null) {
-            throw new IllegalArgumentException("사용자를 찾을 수 없습니다.");
+            throw new ResourceNotFoundException("사용자", userID);
         }
         
         // ID 설정
@@ -92,14 +84,12 @@ public class UserService {
     
     // 사용자 삭제
     public void delete(Integer userID) {
-        if (userID == null) {
-            throw new IllegalArgumentException("삭제할 사용자 ID가 없습니다.");
-        }
+        ValidationUtils.requireValidId(userID, "사용자");
         
         // 존재 확인
         User existingUser = userMapper.selectById(userID);
         if (existingUser == null) {
-            throw new IllegalArgumentException("사용자를 찾을 수 없습니다.");
+            throw new ResourceNotFoundException("사용자", userID);
         }
         
         // 삭제
