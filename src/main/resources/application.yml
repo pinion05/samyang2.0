@@ -5,6 +5,12 @@ spring:
     password: ${DB_PASSWORD:pinion}
     driver-class-name: com.mysql.cj.jdbc.Driver
   
+  # JSP 설정
+  mvc:
+    view:
+      prefix: /WEB-INF/jsp/
+      suffix: .jsp
+  
 mybatis:
   mapper-locations: classpath:mapper/*.xml
   type-aliases-package: com.farm404.samyang.entity
