@@ -1,6 +1,9 @@
 package com.farm404.samyang.controller;
 
 import com.farm404.samyang.dto.common.ErrorResponse;
+import com.farm404.samyang.exception.DuplicateException;
+import com.farm404.samyang.exception.ResourceNotFoundException;
+import com.farm404.samyang.exception.ValidationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -36,6 +39,54 @@ public class GlobalExceptionHandler {
         errorResponse.setErrors(errors);
         
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+    
+    // ResourceNotFoundException 처리
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleResourceNotFoundException(
+            ResourceNotFoundException ex) {
+        
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setTimestamp(LocalDateTime.now());
+        errorResponse.setStatus(HttpStatus.NOT_FOUND.value());
+        errorResponse.setError("Not Found");
+        errorResponse.setMessage(ex.getMessage());
+        errorResponse.setPath(null);
+        errorResponse.setErrors(null);
+        
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+    }
+    
+    // ValidationException 처리
+    @ExceptionHandler(ValidationException.class)
+    public ResponseEntity<ErrorResponse> handleValidationException(
+            ValidationException ex) {
+        
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setTimestamp(LocalDateTime.now());
+        errorResponse.setStatus(HttpStatus.BAD_REQUEST.value());
+        errorResponse.setError("Validation Error");
+        errorResponse.setMessage(ex.getMessage());
+        errorResponse.setPath(null);
+        errorResponse.setErrors(null);
+        
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+    
+    // DuplicateException 처리
+    @ExceptionHandler(DuplicateException.class)
+    public ResponseEntity<ErrorResponse> handleDuplicateException(
+            DuplicateException ex) {
+        
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setTimestamp(LocalDateTime.now());
+        errorResponse.setStatus(HttpStatus.CONFLICT.value());
+        errorResponse.setError("Duplicate Resource");
+        errorResponse.setMessage(ex.getMessage());
+        errorResponse.setPath(null);
+        errorResponse.setErrors(null);
+        
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
     }
     
     // IllegalArgumentException 처리
